@@ -1,0 +1,17 @@
+
+############################################################################## 
+Games::Irrlicht 
+
+2004-02-27 v0.01 Tels - 153 tests (first version)
+  * first working draft
+  * from SDL::App::FPS:
+    + Games::Irrlicht
+    + Games::Irrlicht::Thingy
+    + Games::Irrlicht::Timer
+    + Games::Irrlicht::EventHandler (not functional)
+    + Games::Irrlicht::Group
+
+Please send me test-reports, your experiences with this and your ideas - I love
+to hear about my work!
+
+Tels <http://bloodgate.com/>

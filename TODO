@@ -1,0 +1,14 @@
+
+############################################################################## 
+Games::Irrlicht
+
+* The Makefile.pL and assorted stuff is totally botched. I could not get
+  MakeMaker to generated code that will compile or link. So I tricked it
+  with a hand-rolled batch job (./m) and since make test always compiled
+  the non-working version, call ./ from t/00.t as the first thing.
+  Ugh!
+
+Please send me test-reports, your experiences with this and your ideas - I love
+to hear about my work!
+
+Tels <http://bloodgate.com/>
