@@ -25,6 +25,18 @@ Games::Irrlicht
   * EventReceiver supresses output if disable_logging, used by tests
   * use  mbstowcs() to convert Perl scalar for wchar* functions
 
+2004-03-14 v0.04 Tels - 163 tests
+  * added a preliminary Makefile.PL.win32
+  * added for device:
+    + getVersion()
+    + isWindowActive()
+  * added for filesystem: 
+    + changeWorkingDirectoryTo()
+    + getWorkingDirectory()
+    + FileExists()
+  * added getOSOperator() and getOperationSystemVersion()
+  * added Games::Irrlicht::Constants so that you get EDT_OPENGL etc.
+
 Please send me test-reports, your experiences with this and your ideas - I love
 to hear about my work!
 

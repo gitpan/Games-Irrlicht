@@ -44,7 +44,7 @@ Unpack the package with Winzip or similiar.
 Go to a console and change to the path where you
 unpacked the package, then type:
 
-	perl Makefile.PL
+	perl Makefile.PL.win32
 
 =item Compile it
 

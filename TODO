@@ -8,6 +8,7 @@ Games::Irrlicht
   their own cozy namespace.
 * The techdemo should be converted to Perl just to show we can do it
 * There are too many functions not working yet
+* win32 port
 
 Please send me test-reports, your experiences with this and your ideas - I love
 to hear about my work!

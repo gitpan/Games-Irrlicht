@@ -79,6 +79,7 @@ Cclass MyEventReceiver : public IEventReceiver
 MyEventReceiver receiver;
 
 int _irrlicht_init_engine (
+ unsigned int rtype,
  unsigned int w, unsigned int h, unsigned int d, unsigned int fs,
  unsigned int ll)
   {
@@ -88,7 +89,7 @@ int _irrlicht_init_engine (
 
   device =
      createDevice(
-        EDT_OPENGL,			// renderer
+        (EDriverType)rtype,		// renderer
         dimension2d<s32>(w, h),		// size
         d,				// bit depth
         fs,				// fullscreen?
@@ -128,11 +129,11 @@ int _irrlicht_init_engine (
   
   // DEBUG XXX TODO 
   // add a static string
-  guienv->addStaticText(L"Hello Perl! This is the Irrlicht Software engine!",
-         rect<int>(10,10,200,30), true);
+//  guienv->addStaticText(L"Hello Perl! This is the Irrlicht Software engine!",
+//         rect<int>(10,10,200,30), true);
 
   // add a camera
-  smgr->addCameraSceneNode(0, vector3df(0,10,-40), vector3df(0,0,0));
+//  smgr->addCameraSceneNode(0, vector3df(0,10,-40), vector3df(0,0,0));
 
   return 1;
   }
@@ -149,9 +150,9 @@ PROTOTYPES: DISABLE
 #############################################################################
         
 int
-_init_engine(SV* classname, unsigned int w, unsigned int h, unsigned int d, unsigned int fs, unsigned int ll)
+_init_engine(SV* classname, unsigned int rtype, unsigned int w, unsigned int h, unsigned int d, unsigned int fs, unsigned int ll)
     CODE:
-        RETVAL = _irrlicht_init_engine(w,h,d,fs,ll);
+        RETVAL = _irrlicht_init_engine(rtype,w,h,d,fs,ll);
     OUTPUT:
         RETVAL
 
@@ -395,6 +396,44 @@ setWindowCaption(SV* classname, char* caption)
     mbstowcs(&mytitle[0], caption, 512); 
     device->setWindowCaption(mytitle);
 
+char*
+getVersion(SV* classname)
+  PREINIT:
+    char myversion[512];
+    const wchar_t* myver;
+  CODE:
+    myver = device->getVersion();
+    // TODO: find out length of scalar and alloc memory for myTitle?
+    wcstombs( &myversion[0], myver, 512);
+    RETVAL = myversion;
+  OUTPUT:
+    RETVAL
+
+bool
+isWindowActive(SV* classname)
+  CODE:
+    RETVAL = device->isWindowActive();
+  OUTPUT:
+    RETVAL
+
+##############################################################################
+# OSOperator
+
+char*
+getOperationSystemVersion(SV* classname)
+  PREINIT:
+    char myversion[512];
+    const wchar_t* myver;
+    IOSOperator* os;
+  CODE:
+    os = device->getOSOperator();
+    myver = os->getOperationSystemVersion();
+    // TODO: find out length of scalar and alloc memory for myTitle?
+    wcstombs( &myversion[0], myver, 512);
+    RETVAL = myversion;
+  OUTPUT:
+    RETVAL
+
 ##############################################################################
 # scene manager interface
 
@@ -421,10 +460,29 @@ loadBSP(SV* classname, char* name)
 ##############################################################################
 # file system interface
 
-int
-addZipFileArchive(SV* classnamem, char* archive)
+bool
+addZipFileArchive(SV* classname, char* archive)
   CODE:
     RETVAL = filesystem->addZipFileArchive( archive );
+  OUTPUT:
+    RETVAL
+
+# this does not work in Irrlicht v0.6 in Linux (returns always false)
+
+bool
+changeWorkingDirectoryTo(SV* classname, char* directory)
+  CODE:
+    RETVAL = filesystem->changeWorkingDirectoryTo( directory );
+    printf ("%i\n", filesystem->changeWorkingDirectoryTo( directory ));
+  OUTPUT:
+    RETVAL
+
+# this does not work in Irrlicht v0.6 in Linux (returns null)
+
+char*
+getWorkingDirectory(SV* classname)
+  CODE:
+    RETVAL = (char*) filesystem->getWorkingDirectory( );
   OUTPUT:
     RETVAL
 

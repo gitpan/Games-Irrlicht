@@ -8,10 +8,12 @@ LICENSE
 TODO
 NEW
 Makefile.PL
+Makefile.PL.win32
 Irrlicht.xs
 examples/techdemo.pl
 examples/lib/Games/Irrlicht/TechDemo.pm
 lib/Games/Irrlicht.pm
+lib/Games/Irrlicht/Constants.pm
 lib/Games/Irrlicht/Thingy.pm
 lib/Games/Irrlicht/Timer.pm
 lib/Games/Irrlicht/EventHandler.pm
@@ -21,6 +23,7 @@ t/media/test.zip
 t/config/test.cfg
 t/config/test2.cfg
 t/config/client.cfg
+t/constant.t
 t/irrlichtpm.t
 t/thingy.t
 t/timer.t

@@ -7,6 +7,8 @@
 * the entire EventHandler code needs revamping due to SDL_KEYDOWN vs. whatever
   Irrlicht uses
 * The framerate wait-delay stuff (nanosleep) does not work like it should
+* some enums/constants might be missing
+* windows make untested (does probably not work)
 
 Please send me test-reports, your experiences with this and your ideas - I love
 to hear about my work!

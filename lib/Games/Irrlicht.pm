@@ -16,10 +16,11 @@ require Exporter;
 use vars qw/@ISA $VERSION @EXPORT_OK/;
 @ISA = qw/Exporter DynaLoader/;
 
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 bootstrap Games::Irrlicht $VERSION;
 
+use Games::Irrlicht::Constants;
 use Games::Irrlicht::Thingy;
 use Games::Irrlicht::Timer;
 use Games::Irrlicht::Group;
@@ -38,9 +39,17 @@ sub new
   
   my $app = $self->{_app};
   my $opt = $app->{options};
+ 
+  my $renderer = uc($opt->{renderer});
   
-  Games::Irrlicht->_init_engine( $opt->{width}, $opt->{height}, $opt->{depth},
-	$opt->{fullscreen}, $opt->{disable_log} );
+  {
+    no strict 'refs';
+    $renderer = &{'Games::Irrlicht::Constants::EDT_'.$renderer};
+  }
+
+  Games::Irrlicht->_init_engine( $renderer,
+    $opt->{width}, $opt->{height}, $opt->{depth},
+    $opt->{fullscreen}, $opt->{disable_log} );
 
   foreach my $k (qw/width height depth/)
     {
@@ -85,6 +94,12 @@ sub new
   }
 
 sub getFileSystem
+  {
+  my $self = shift;
+  $self;
+  }
+
+sub getOSOperator
   {
   my $self = shift;
   $self;
@@ -239,7 +254,7 @@ sub _init
     resizeable => 1,
     max_fps => 60,
     time_warp => 1,
-    renderer => 'opengl',
+    renderer => 'OpenGL',
     disable_log => 0,
     useconsole => 0,
     font_console => 'data/console.fnt',
@@ -1243,6 +1258,15 @@ Games::Irrlicht - use the Irrlicht 3D Engine in Perl
 
 =head1 SYNOPSIS
 
+	package MyGame;
+	use strict;
+
+	use base Games::Irrlicht;
+
+	use Games::Irrlicht::Constants;		 get EDT_SOFTWARE etc
+
+	# override methods:
+
 =head1 EXPORTS
 
 Exports nothing on default.
@@ -1498,15 +1522,22 @@ call all Irrlicht functions like:
 These generally corrospondent to the Irrlicht API. See Irrlicht itself
 for more information about available methods.
 
+You can get the Irrlicht enums and constants by:
+
+	use Games::Irrlicht::Constants;
+
+This will export EDT_OPENGL etc into your namespace, where you can just use
+them like in C++.
+
 =over 2
 
 =item getIrrlichtDevice
 
-Returns the main irrlicht device class.
+Returns the main irrlicht device class, C<IrrlichtDevice>.
 
 =item getVideoDriver
 
-Returns the video driver class.
+Returns the video driver class, C<IVideoDriver>.
 
 =item getSzeneManager
 
@@ -1519,6 +1550,10 @@ Returns the Irrlicht file system class.
 =item getGUIEnvironment
 
 Returns the Irrlicht GUI Environment class.
+
+=item getOSOperator
+
+Returns the Irrlicht OSOperator class.
 
 =back
 
@@ -1548,6 +1583,7 @@ new() gets a hash ref with options, the following options are supported:
 			  DirectX8
 			  DirectX9
 			  Software
+			  Null
 	config		Path and name of the config file, defaults to
 			  'config/client.cfg'.
 	time_warp	Defauls to 1.0 - initial time warp value.
