@@ -2,7 +2,7 @@
 #include "perl.h"
 #include "XSUB.h"
 
-
+#include <stdlib.h>
 #include <Irrlicht/irrlicht.h>
 #include <time.h>
 
@@ -34,6 +34,7 @@ using namespace core;
 using namespace scene;
 using namespace video;
 using namespace gui;
+// this clashes with XSUBPP
 //using namespace io;
 
 IrrlichtDevice* device;
@@ -43,9 +44,48 @@ IGUIEnvironment* guienv;
 ITimer* timer;
 irr::io::IFileSystem* filesystem;
 
-int _irrlicht_init_engine (
- unsigned int w, unsigned int h, unsigned int d, int fs)
+/* ************************************************************************ */
+
+/*
+To get events like mouse and keyboard input, or GUI events like
+"the OK button has been clicked", we need an object wich is derived from the
+IEventReceiver object. There is only one method to override: OnEvent.
+This method will be called by the engine when an event happened.
+*/
+
+int disable_logging = 0;
+
+// for xsubpp not to stumble
+#define Cclass class
+
+Cclass MyEventReceiver : public IEventReceiver
   {
+  public: virtual bool OnEvent(SEvent event)
+    {
+    if (event.EventType == EET_LOG_TEXT_EVENT && disable_logging)
+      {
+      // consume this event and thus prevent log output
+      return true;
+      }
+
+
+    printf ("received event\n");
+    // should call a perl callback here and store the event
+    //return true;
+    return false;
+    }
+  };
+
+MyEventReceiver receiver;
+
+int _irrlicht_init_engine (
+ unsigned int w, unsigned int h, unsigned int d, unsigned int fs,
+ unsigned int ll)
+  {
+  ILogger* logger;
+
+  disable_logging = ll;
+
   device =
      createDevice(
         EDT_OPENGL,			// renderer
@@ -53,8 +93,11 @@ int _irrlicht_init_engine (
         d,				// bit depth
         fs,				// fullscreen?
         false,				// stencilbuffer
-        0);				// event receiver
+        &receiver);			// event receiver
   if (NULL == device) { return 0; }     // error
+
+  logger = device->getLogger();
+  logger->setLogLevel(ELL_ERROR);
 
   driver = device->getVideoDriver();
   smgr = device->getSceneManager();
@@ -94,6 +137,8 @@ int _irrlicht_init_engine (
   return 1;
   }
 
+/* ************************************************************************ */
+
 /*
 Games::Irrlicht XS code (C) by Tels <http://bloodgate.com/perl/> 
 */
@@ -104,9 +149,9 @@ PROTOTYPES: DISABLE
 #############################################################################
         
 int
-_init_engine(SV* classname, unsigned int w, unsigned int h, unsigned int d, unsigned int fs)
+_init_engine(SV* classname, unsigned int w, unsigned int h, unsigned int d, unsigned int fs, unsigned int ll)
     CODE:
-        RETVAL = _irrlicht_init_engine(w,h,d,fs);
+        RETVAL = _irrlicht_init_engine(w,h,d,fs,ll);
     OUTPUT:
         RETVAL
 
@@ -305,43 +350,83 @@ getPrimitiveCountDrawn(SV* classname)
     OUTPUT:
       RETVAL
 
+# getTexture
+
+double
+getTexture(SV* classname)
+    CODE:
+      RETVAL = driver->getPrimitiveCountDrawn();
+    OUTPUT:
+      RETVAL
+
 ##############################################################################
 # device interface
 
+#virtual 	~IrrlichtDevice ()
+#virtual bool 	run ()=0
+#virtual video::IVideoDriver * 	getVideoDriver ()=0
+#virtual io::IFileSystem * 	getFileSystem ()=0
+#virtual gui::IGUIEnvironment * 	getGUIEnvironment ()=0
+#virtual scene::ISceneManager * 	getSceneManager ()=0
+#virtual gui::ICursorControl * 	getCursorControl ()=0
+#virtual ILogger * 	getLogger ()=0
+#virtual video::IVideoModeList * 	getVideoModeList ()=0
+#virtual IOSOperator * 	getOSOperator ()=0
+#virtual ITimer * 	getTimer ()=0
+#virtual void 	setWindowCaption (const wchar_t *text)=0
+#virtual bool 	isWindowActive ()=0
+#virtual void 	closeDevice ()=0
+#virtual const wchar_t * 	getVersion ()=0
+#virtual void 	setEventReceiver (IEventReceiver *receiver)=0
+
 void
 setVisible(SV* classname, int vis)
-    CODE:
-      device->getCursorControl()->setVisible(vis);
+  CODE:
+    device->getCursorControl()->setVisible(vis);
+
+# set window title
+
+void
+setWindowCaption(SV* classname, char* caption)
+  PREINIT:
+    wchar_t mytitle[512];
+  CODE:
+    // TODO: find out length of scalar and alloc memory for myTitle?
+    mbstowcs(&mytitle[0], caption, 512); 
+    device->setWindowCaption(mytitle);
 
 ##############################################################################
 # scene manager interface
 
-void
+int
 addCameraSceneNodeFPS(SV* classname)
-    CODE:
-      smgr->addCameraSceneNode();
+  CODE:
+    smgr->addCameraSceneNodeFPS();
+    RETVAL = 1;	
+  OUTPUT:
+    RETVAL
         
 int
 loadBSP(SV* classname, char* name)
-    CODE:
-      scene::IAnimatedMesh* mesh = smgr->getMesh(name);
-      scene::ISceneNode* node = 0;
-      RETVAL = 0;
-      if (mesh)
-        {
-        node = smgr->addOctTreeSceneNode(mesh->getMesh(0));
-        RETVAL = 1;
-        }
+  CODE:
+    scene::IAnimatedMesh* mesh = smgr->getMesh(name);
+    scene::ISceneNode* node = 0;
+    RETVAL = 0;
+    if (mesh)
+      {
+      node = smgr->addOctTreeSceneNode(mesh->getMesh(0));
+      RETVAL = 1;
+      }
 
 ##############################################################################
 # file system interface
 
 int
 addZipFileArchive(SV* classnamem, char* archive)
-    CODE:
-      RETVAL = filesystem->addZipFileArchive( archive );
-    OUTPUT:
-      RETVAL
+  CODE:
+    RETVAL = filesystem->addZipFileArchive( archive );
+  OUTPUT:
+    RETVAL
 
 # EOF
 ##############################################################################

@@ -1,6 +1,11 @@
 
 =head1 Games::Irrlicht
 
+=head1 INSTALL
+
+For instructions on how to install Games::Irrlicht under Windows, please
+see README.win32.
+
 =head1 DEPENDENCIES
 
 You need to install the Irrlicht engine from L<http://irrlicht.sf.net>. I

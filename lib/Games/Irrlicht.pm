@@ -16,7 +16,7 @@ require Exporter;
 use vars qw/@ISA $VERSION @EXPORT_OK/;
 @ISA = qw/Exporter DynaLoader/;
 
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 bootstrap Games::Irrlicht $VERSION;
 
@@ -40,7 +40,7 @@ sub new
   my $opt = $app->{options};
   
   Games::Irrlicht->_init_engine( $opt->{width}, $opt->{height}, $opt->{depth},
-	$opt->{fullscreen} );
+	$opt->{fullscreen}, $opt->{disable_log} );
 
   foreach my $k (qw/width height depth/)
     {
@@ -81,6 +81,36 @@ sub new
   # }
 
   $self->message ('Application successfully initialized.');
+  $self;
+  }
+
+sub getFileSystem
+  {
+  my $self = shift;
+  $self;
+  }
+
+sub getVideoDriver
+  {
+  my $self = shift;
+  $self;
+  }
+
+sub getIrrlichtDevice
+  {
+  my $self = shift;
+  $self;
+  }
+
+sub getSzeneManager
+  {
+  my $self = shift;
+  $self;
+  }
+
+sub getGUIEnvironment
+  {
+  my $self = shift;
   $self;
   }
 
@@ -210,6 +240,7 @@ sub _init
     max_fps => 60,
     time_warp => 1,
     renderer => 'opengl',
+    disable_log => 0,
     useconsole => 0,
     font_console => 'data/console.fnt',
     showfps => 0,
@@ -232,7 +263,7 @@ sub _init
  
   # normalize flags 
   foreach my $key (qw/
-     fullscreen resizeable useconsole debug
+     fullscreen resizeable useconsole debug disable_log
     /)
     {
     $opt->{$key} = 0 unless defined $opt->{$key};	# auto-vivify
@@ -1452,6 +1483,42 @@ Called by L<main_loop()> just before the application is exiting.
 =item resize_handler()
 
 Called automatically whenever the application window size changed.
+
+=back
+
+=head2 Irrlicht Special Methods
+
+The following methods are special to Irrlicht and can be used to get
+the single elements from the Irrlicht engine. With these you can then
+call all Irrlicht functions like:
+
+	my $driver = $app->VideoDriver();
+	$driver->getPrimitiveCountDrawn();
+
+These generally corrospondent to the Irrlicht API. See Irrlicht itself
+for more information about available methods.
+
+=over 2
+
+=item getIrrlichtDevice
+
+Returns the main irrlicht device class.
+
+=item getVideoDriver
+
+Returns the video driver class.
+
+=item getSzeneManager
+
+Returns the szene manager class.
+
+=item getFileSystem
+
+Returns the Irrlicht file system class.
+
+=item getGUIEnvironment
+
+Returns the Irrlicht GUI Environment class.
 
 =back
 

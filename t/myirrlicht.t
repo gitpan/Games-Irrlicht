@@ -47,7 +47,8 @@ can_ok ('Games::Irrlicht::MyApp', qw/
 #  add_button del_button
 # add_event_handler del_event_handler
 
-my $options = { width => 640, height => 480, depth => 24, max_fps => 60};
+my $options = { 
+ width => 640, height => 480, depth => 24, max_fps => 60, disable_log => 1 };
 
 my $app = Games::Irrlicht::MyApp->new( $options );
 

@@ -1,7 +1,7 @@
 
 * running "make test" hangs in t/myirrlicht.t, while perl t/myirrlicht.t works
   (huh?) (this is some problem with the nanosleep)
-* resizable is not supported
+* resizable is not supported?
 * fullscreen does not seem to work
 * screenshots not yet possible
 * the entire EventHandler code needs revamping due to SDL_KEYDOWN vs. whatever

@@ -15,7 +15,7 @@ BEGIN
   use_ok ('Games::Irrlicht::MyApp');
   }
 
-my $options = { config => 'config/test.cfg' };
+my $options = { config => 'config/test.cfg', disable_log => 1 };
 my $app = Games::Irrlicht::MyApp->new( $options );
 
 is (keys %$app, 2, 'data all encapsulated');
@@ -36,7 +36,7 @@ is ($app->option('useconsole'), '1', 'useconsole');
 is ($app->option('showfps'), '1', 'showfps');
 
 ##############################################################################
-$app = Games::Irrlicht::MyApp->new( );
+$app = Games::Irrlicht::MyApp->new( disable_log => 1 );
 
 is (keys %$app, 2, 'data all encapsulated');
 is (exists $app->{_app}, 1, 'data all encapsulated');
@@ -55,7 +55,7 @@ is ($app->option('useconsole'), '0', 'useconsole');
 is ($app->option('showfps'), '0', 'showfps');
 
 ##############################################################################
-$app = Games::Irrlicht::MyApp->new( config => 'non-existant' );
+$app = Games::Irrlicht::MyApp->new(config => 'non-existant', disable_log => 1);
 
 is (keys %$app, 2, 'data all encapsulated');
 is (exists $app->{_app}, 1, 'data all encapsulated');
@@ -72,7 +72,7 @@ is ($app->option('max_fps'), 60, 'max_fps');
 is ($app->option('time_warp'), 1, 'time_warp');
 
 ##############################################################################
-$options = { config => 'config/test2.cfg' };
+$options = { config => 'config/test2.cfg', disable_log => 1 };
 $app = Games::Irrlicht::MyApp->new( $options );
 
 is ($app->option('bar_barfel'), 'abc', '[bar] read ok');

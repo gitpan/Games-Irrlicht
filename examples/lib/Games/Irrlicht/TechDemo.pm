@@ -8,12 +8,30 @@ package Games::Irrlicht::TechDemo;
 use strict;
 
 use Games::Irrlicht;
+use File::Spec;
 
 use vars qw/@ISA/;
 @ISA = qw/Games::Irrlicht/;
 
 ##############################################################################
 # routines that are usually overriden in a subclass
+
+sub post_init_handler
+  {
+  my $self = shift;
+
+  my $fs = $self->getFileSystem();
+
+  # should use Config to get path to media dir
+   
+  $fs->addZipFileArchive("../media/irrlicht.dat");
+  $fs->addZipFileArchive("../media/map-20kdm2.pk3");
+
+  my $device = $self->getIrrlichtDevice();
+
+  my $caption = "Irrlicht Engine Techdemo";
+  $device->setWindowCaption($caption);
+  }
 
 sub draw_frame
   {

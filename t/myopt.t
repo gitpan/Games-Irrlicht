@@ -18,7 +18,7 @@ BEGIN
 # simulate command line
 @ARGV = qw/--fullscreen --width=800/;
 
-my $app = Games::Irrlicht::MyApp->new( );
+my $app = Games::Irrlicht::MyApp->new( disable_log => 1 );
 
 is (keys %$app, 2, 'data all encapsulated');
 is (exists $app->{_app}, 1, 'data all encapsulated');

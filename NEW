@@ -1,8 +1,12 @@
 
 ############################################################################## 
-Games::Irrlicht:
+What's new in this version of Games::Irrlicht:
 
-* Since this is the first version: anything
+  * Irrlicht: added getFileSystem(), getSzeneManager(), getGUIEnvironment(),
+    getVideoDriver(), getIrrlichtDevice()
+  * tests for these
+  * EventReceiver supresses output if disable_logging, used by tests
+  * use mbstowcs() to convert Perl scalar for wchar* functions
 
 Please send me test-reports, your experiences with this and your ideas - I love
 to hear about my work!

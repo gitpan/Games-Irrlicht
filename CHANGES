@@ -17,7 +17,14 @@ Games::Irrlicht
   * print out what went wrong in init_engine()
   * query filesystem, too
   * fixed the Makefile.PL building, thanx Nick. Ing. Simmons!
-  
+
+2004-03-06 v0.03 Tels - 158 tests
+  * Irrlicht: added FileSystem(), SzeneManager(), GUIEnvironment(),
+    VideoDriver(), IrrlichtDevice()
+  * tests for these
+  * EventReceiver supresses output if disable_logging, used by tests
+  * use  mbstowcs() to convert Perl scalar for wchar* functions
+
 Please send me test-reports, your experiences with this and your ideas - I love
 to hear about my work!
 
