@@ -2,11 +2,13 @@
 #include "perl.h"
 #include "XSUB.h"
 
+
 #include <Irrlicht/irrlicht.h>
 #include <time.h>
 
 struct timespec my_time_spec;
 
+/* ************************************************************************ */
 /* our framerate monitor memory */
 #define FRAMES_MAX 4096
 unsigned int frames[FRAMES_MAX] = { 0 };
@@ -25,6 +27,7 @@ unsigned int min_frame_time = 20000;
    (e.g. not sleep) the next frame to correct for this */
 unsigned int wake_time = 0;
 
+/* ************************************************************************ */
 using namespace irr;
 
 using namespace core;
@@ -38,6 +41,7 @@ IVideoDriver* driver;
 ISceneManager* smgr;
 IGUIEnvironment* guienv;
 ITimer* timer;
+irr::io::IFileSystem* filesystem;
 
 int _irrlicht_init_engine (
  unsigned int w, unsigned int h, unsigned int d, int fs)
@@ -56,12 +60,30 @@ int _irrlicht_init_engine (
   smgr = device->getSceneManager();
   guienv = device->getGUIEnvironment();
   timer = device->getTimer();
+  filesystem = device->getFileSystem();
 
-  if (NULL == driver || NULL == smgr || NULL == guienv)
+  if (NULL == driver)
     {
+    printf ("Could not get VideoDriver from Irrlicht device.\n");
     return 0;                           // error
     }
-
+  if (NULL == smgr)
+    {
+    printf ("Could not get SceneManager from the Irrlicht device.\n");
+    return 0;                           // error
+    }
+  if (NULL == guienv)
+    {
+    printf ("Could not get GUIEnvironment from the Irrlicht device.\n");
+    return 0;                           // error
+    }
+  if (NULL == filesystem)
+    {
+    printf ("Could not get FileSystem from the Irrlicht device.\n");
+    return 0;                           // error
+    }
+  
+  // DEBUG XXX TODO 
   // add a static string
   guienv->addStaticText(L"Hello Perl! This is the Irrlicht Software engine!",
          rect<int>(10,10,200,30), true);
@@ -175,7 +197,7 @@ _delay(min_time,base_ticks)
         wake_time = now - last - min_time;
         }
       }
-//	printf ("now: %i\n", now);
+//	printf ("  now: %i\n", now);
     diff = now - last;
     ST(0) = newSViv(now);
     ST(1) = newSViv(diff);
@@ -244,6 +266,7 @@ _delay(min_time,base_ticks)
     ST(2) = newSVnv(framerate);
     XSRETURN(3);
 
+##############################################################################
 SV*
 min_fps(SV* classname)
     CODE:
@@ -271,4 +294,56 @@ min_frame_time(SV* classname)
       RETVAL = newSViv(min_frame_time);
     OUTPUT:
       RETVAL
+
+##############################################################################
+# driver interface
+
+double
+getPrimitiveCountDrawn(SV* classname)
+    CODE:
+      RETVAL = driver->getPrimitiveCountDrawn();
+    OUTPUT:
+      RETVAL
+
+##############################################################################
+# device interface
+
+void
+setVisible(SV* classname, int vis)
+    CODE:
+      device->getCursorControl()->setVisible(vis);
+
+##############################################################################
+# scene manager interface
+
+void
+addCameraSceneNodeFPS(SV* classname)
+    CODE:
+      smgr->addCameraSceneNode();
+        
+int
+loadBSP(SV* classname, char* name)
+    CODE:
+      scene::IAnimatedMesh* mesh = smgr->getMesh(name);
+      scene::ISceneNode* node = 0;
+      RETVAL = 0;
+      if (mesh)
+        {
+        node = smgr->addOctTreeSceneNode(mesh->getMesh(0));
+        RETVAL = 1;
+        }
+
+##############################################################################
+# file system interface
+
+int
+addZipFileArchive(SV* classnamem, char* archive)
+    CODE:
+      RETVAL = filesystem->addZipFileArchive( archive );
+    OUTPUT:
+      RETVAL
+
+# EOF
+##############################################################################
+
 

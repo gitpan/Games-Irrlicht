@@ -6,7 +6,6 @@ SIGNATURE
 LICENSE
 TODO
 NEW
-m
 Makefile.PL
 Irrlicht.xs
 examples/techdemo.pl
@@ -17,10 +16,10 @@ lib/Games/Irrlicht/Timer.pm
 lib/Games/Irrlicht/EventHandler.pm
 lib/Games/Irrlicht/Group.pm
 t/Games/Irrlicht/MyApp.pm
+t/media/test.zip
 t/config/test.cfg
 t/config/test2.cfg
 t/config/client.cfg
-t/00.t
 t/irrlichtpm.t
 t/thingy.t
 t/timer.t

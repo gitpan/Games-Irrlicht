@@ -14,13 +14,15 @@ WriteMakefile(
                 AUTHOR         => 'Tels <http://bloodgate.com/>') : ()),
 	'CC'		=> 'g++',
 	'LD'		=> 'g++',
-	'LIBS'		=> [ '-L/usr/X11R6/lib -L/usr/local/lib/Irrlicht -lX11 -lXext -lXxf86vm -lIrrlicht -lGL -ljpeg -lz' ],
-	'LDFLAGS'	=> '-static -L/usr/X11R6/lib -L/usr/local/lib/Irrlicht -lXxf86vm -lIrrlicht -lGL -lGLU -ljpeg -lz -lX11 -lXext',
-#	'LDFLAGS'	=>   '-L/usr/X11R6/lib -L/usr/local/lib/Irrlicht -Ljpeglib -Lzlib',
+	'LIBS'		=> [ '-L/usr/X11R6/lib -L/usr/local/lib/Irrlicht -lIrrlicht -lGL -lX11 -lXext -lXxf86vm -ljpeg -lz' ],
+
+# makes no difference
+#	'LDFLAGS'	=> '-static -L/usr/X11R6/lib -L/usr/local/lib/Irrlicht -lIrrlicht -lXxf86vm -lGL -lGLU -lX11 -lXext -ljpeg -lz',
 
 	'OPTIMIZE'	=> '-O2',
 	'DEFINE'	=> '', # e.g., '-DHAVE_SOMETHING'
 	'INC'		=> '',
-#	'XSOPT'		=> '-C++', 
+# makes no difference
+	'XSOPT'		=> '-C++', 
 #	'OBJECT'	=> '', 
 );

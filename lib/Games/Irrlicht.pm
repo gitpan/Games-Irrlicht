@@ -16,7 +16,7 @@ require Exporter;
 use vars qw/@ISA $VERSION @EXPORT_OK/;
 @ISA = qw/Exporter DynaLoader/;
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 bootstrap Games::Irrlicht $VERSION;
 
@@ -893,6 +893,13 @@ sub current_fps
   $self->{_app}->{current_fps};
   }
 
+sub hide_mouse_cursor
+  {
+  my ($self,$vis) = @_;
+
+  $self->setVisible($vis); 
+  }
+
 sub frames
   {
   # return number of frames already drawn
@@ -997,13 +1004,14 @@ sub _next_frame
     $app->{time_warp} * $diff + $app->{lastframe_time};
   $self->_ramp_time_warp() if $app->{ramp_warp_time} != 0;
 
-  #print "$app->{current_time}\n";
+#  print "$app->{current_time}\n";
 
   # now do something that takes time, like updating the world and drawing it
   $self->draw_frame(
    $app->{current_time},$app->{lastframe_time},$app->{current_fps});
 
   my $rc = $self->_run_engine();
+  $self->quit() unless $rc;
 
   my $opt = $app->{options};
 #  $app->{console}->render($app->{current_time}) if $opt->{useconsole};
@@ -1604,7 +1612,13 @@ Delete the given timer (or the one by the given id).
 
 Return count of active timers.
 
-=item add_group
+=item hide_mouse_cursor()
+
+	$self->hide_mouse_cursor( $vis );
+
+Hides the mouse cursor if C<$vis> is true.
+
+=item add_group()
 
         $group = $app->add_group();
 

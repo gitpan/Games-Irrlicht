@@ -2,7 +2,7 @@
 ############################################################################## 
 Games::Irrlicht 
 
-2004-02-27 v0.01 Tels - 153 tests (first version)
+2004-02-28 v0.01 Tels - 153 tests (first version)
   * first working draft
   * from SDL::App::FPS:
     + Games::Irrlicht
@@ -11,6 +11,13 @@ Games::Irrlicht
     + Games::Irrlicht::EventHandler (not functional)
     + Games::Irrlicht::Group
 
+2004-02-29 v0.02 Tels - 156 tests
+  * added getPrimitiveCountDrawn(), addCameraSceneNodeFPS()
+  * hide_mouse_cursor()
+  * print out what went wrong in init_engine()
+  * query filesystem, too
+  * fixed the Makefile.PL building, thanx Nick. Ing. Simmons!
+  
 Please send me test-reports, your experiences with this and your ideas - I love
 to hear about my work!
 
